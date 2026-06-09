@@ -1,0 +1,54 @@
+{{define "network_lookup"}}
+<div class="row"><div class="col-md-6">
+    <form id="network-lookup-form" method="post">
+        <div class="form-row"><div class="col">
+            <div class="form-group">
+                <label for="source">Source</label>
+                <select class="selectpicker form-control" name="source" id="source" title="Please select source" data-live-search="true" required>
+                    {{range .NetworkSources}}
+                    {{if .GroupStart}}<optgroup label="{{.Group}}">{{end}}
+                    <option value="{{.Value}}" data-subtext="{{.Subtext}}">{{.Label}}</option>
+                    {{if .GroupEnd}}</optgroup>{{end}}
+                    {{end}}
+                </select>
+            </div>
+        </div></div>
+        <div class="form-row"><div class="col">
+            <div class="form-group">
+                <label for="network">Network Prefix</label>
+                <input type="text" class="form-control" name="network" id="network" placeholder="192.0.2.0/24 | 2001:db8:7:2::/64" required>
+                <small class="form-text text-muted">192.0.2.0/24 | 2001:db8:7:2::/64</small>
+            </div>
+        </div></div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div></div>
+{{end}}
+
+{{define "community_lookup"}}
+<div class="row"><div class="col-md-6">
+    <form id="community-lookup-form" method="post">
+        <div class="form-row"><div class="col">
+            <div class="form-group">
+                <label for="table">Table</label>
+                <select class="selectpicker form-control" name="table" id="table" title="Please select table" data-live-search="true" data-show-subtext="true" required>
+                    {{range .Tables}}<option value="{{.ID}}" data-subtext="{{.Peer.DisplayName}}" {{if eq $.SelectedTable .ID}}selected{{end}}>{{.ID}}</option>{{end}}
+                </select>
+            </div>
+        </div></div>
+        <div class="form-row"><div class="col">
+            <div class="form-group">
+                <label for="community">Community</label>
+                <select class="selectpicker form-control" name="community" id="community" title="Please select community" data-live-search="true" data-selected-text-format="count > 1" data-max-options="10" required multiple>
+                    {{range .CommunityOptions}}
+                    {{if .GroupStart}}<optgroup label="{{.Group}}">{{end}}
+                    <option value="{{.Value}}" data-content="{{.Content}}">{{.Label}}</option>
+                    {{if .GroupEnd}}</optgroup>{{end}}
+                    {{end}}
+                </select>
+            </div>
+        </div></div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div></div>
+{{end}}

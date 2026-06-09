@@ -1,0 +1,24 @@
+{{define "home"}}
+<div class="row row-cols-1 row-cols-md-3">
+    {{range .Servers}}
+    <div class="col mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{.Name}}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{.Description}}</h6>
+                <p class="card-text">{{.Message}}</p>
+                <ul class="list-unstyled">
+                    <li>Bird {{.DisplayVersion}}</li>
+                    <li>Router ID: {{.RouterID}}</li>
+                    <li>Uptime: {{uptime .}} days</li>
+                    <li>Last Reconfigure: {{date .LastReconfiguration}}</li>
+                </ul>
+                <p class="card-text"><small class="text-muted">Status updated {{dateTime .CreatedAt}}</small></p>
+                <a href="/{{.ID}}/bfd/sessions" class="btn btn-primary my-md-1" title="BFD Sessions Summary">BFD Sessions</a>
+                <a href="/{{.ID}}/bgp/protocols" class="btn btn-primary my-md-1" title="BGP Protocols Summary">BGP Protocols</a>
+            </div>
+        </div>
+    </div>
+    {{end}}
+</div>
+{{end}}

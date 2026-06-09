@@ -1,110 +1,65 @@
-# BirdSpy – Web Application for Querying BIRD Servers
+# BirdSpy
 
-## Security
+BirdSpy is now a Go application that serves the existing frontend and queries BIRD route servers directly through their Unix control sockets.
 
-It's not recommended to run this application with public access. Ideally, run it on private network.
+The runtime deployment is intentionally small:
 
-## Installation
+- `birdspy`: one self-contained binary with the compiled frontend embedded
+- `config.json`: one configuration file
 
-This is a basic [Symfony](https://symfony.com) PHP application and the requirements are:
+No external cache service is required. Runtime caches are in-process Go memory caches with a configurable TTL, LRU entry limit, and periodic expiry cleanup.
 
-* PHP >= 7.3
-* BCMath PHP Extension
-* Ctype PHP Extension
-* Iconv PHP Extension
-* JSON PHP Extension
-* Mbstring PHP Extension
-* [Redis](https://redis.io) + PHP Extension
+## Build
 
-For Apache or Nginx, [setup a virtual host](https://symfony.com/doc/current/setup/web_server_configuration.html) to
-point to the `public/` directory of the project.
+Requirements for building from source:
 
-Make sure that `var/` directory is writable by `www-data` user or the appropriate web server user.
+- Go 1.26 or newer
+- Node.js and npm
 
-Create `.env.local` with custom variables (how to and which is described in `.env`).
-
-Configuration files are in `config/packages/` directory (a specially: `app.yaml`, `bird.yaml`, `cache.yaml`). They could
-be rewritten with environment equivalents in `dev/`, `prod/`, `test/` subdirectories.
-
-You need to give the `www-data` user permission to run the `birdc` script. Add to `/etc/sudoers`:
-
-```
-www-data        ALL=(ALL)       NOPASSWD: /project_path/bin/birdc
-```
-
-The best way to install dependencies is using [Composer](https://getcomposer.org) and [Yarn](https://yarnpkg.com)
-from `project_path`:
+Build the frontend and binary:
 
 ```sh
-$ composer install
-$ yarn install
+make package
 ```
 
-And then build assets:
+The release files are written to `dist/`:
+
+```text
+dist/birdspy
+dist/config.json
+```
+
+## Run
 
 ```sh
-$ yarn build
+./dist/birdspy -config ./dist/config.json
 ```
 
-## Commands
+`config.json` controls the listen address, BIRD servers, cache behavior, flags, known communities, and filtering rules. The cache settings are:
 
-For Commands List run from `project_path`:
-
-```sh
-$ php bin/console
+```json
+"cache_ttl_seconds": 300,
+"cache_max_entries": 1024,
+"cache_cleanup_interval_seconds": 60
 ```
 
-Import invalid routes for all servers:
+For live BIRD sockets, set:
 
-```sh
-$ php bin/console app:import-invalid-routes
+```json
+"reader": {
+  "mode": "socket",
+  "tiny_samples": false,
+  "command_timeout_seconds": 180
+}
 ```
 
-Or specifically for one server:
-
-```sh
-$ php bin/console app:import-server-invalid-routes nix-rs-1
-```
-
-Import filtered routes for all servers:
-
-```sh
-$ php bin/console app:import-filtered-routes
-```
-
-Or specifically for one server:
-
-```sh
-$ php bin/console app:import-server-filtered-routes nix-rs-1
-```
-
-## CRON
-
-For automation commands use:
-
-```sh
-$ crontab -u www-data -e
-```
-
-And add similar:
-
-```
-SHELL=/bin/sh
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-MAILTO=""
-
-# NIX/BirdSpy Invalid Routes
-*/5 * * * * /usr/bin/php /project_path/bin/console app:import-server-invalid-routes nix-rs-1 -q
-
-# NIX/BirdSpy Filtered Routes
-*/7 * * * * /usr/bin/php /project_path/bin/console app:import-server-filtered-routes nix-rs-1 -q
-```
+The sample mode is useful for local smoke tests because it uses the embedded sample BIRD output files.
 
 ## BIRD Configuration
 
-It's recommended, but not necessary to change time format to match BirdSpy looking glass:
+The parser expects stable timestamp formatting. Recommended BIRD settings:
 
-```
+```text
 timeformat base         iso long;
 timeformat log          iso long;
 timeformat protocol     iso long;
@@ -113,4 +68,4 @@ timeformat route        iso long;
 
 ## License
 
-This application is open-sourced software licensed under the MIT license – see [the license file](LICENSE.md).
+This application is open-sourced software licensed under the MIT license. See [LICENSE.md](LICENSE.md).

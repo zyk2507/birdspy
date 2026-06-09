@@ -1,0 +1,29 @@
+{{define "select_bgp_state"}}
+<select class="selectpicker" name="bgp-state" id="select-bgp-state" data-width="100%" data-selected-text-format="count > 1" data-actions-box="true" multiple>
+<option value="Active" data-content="<span class='bgh bgh-warning'>Active</span>">Active</option><option value="Connect" data-content="<span class='bgh bgh-warning'>Connect</span>">Connect</option><option value="Established" data-content="<span class='bgh bgh-success'>Established</span>">Established</option><option value="Idle" data-content="<span class='bgh bgh-warning'>Idle</span>">Idle</option>
+</select>
+{{end}}
+
+{{define "select_bgp_status"}}
+<select class="selectpicker" name="status" id="select-status" data-width="100%" data-selected-text-format="count > 1" data-actions-box="true" multiple>
+<option value="start" data-content="<span class='bgh bgh-warning'>Start</span>">Start</option><option value="up" data-content="<span class='bgh bgh-success'>Up</span>">Up</option>
+</select>
+{{end}}
+
+{{define "select_bfd_state"}}
+<select class="selectpicker" name="bfd-state" id="select-bfd-state" data-width="100%" data-selected-text-format="count > 1" data-actions-box="true" multiple>
+<option value="Down" data-content="<span class='bgh bgh-warning'>Down</span>">Down</option><option value="Init" data-content="<span class='bgh bgh-warning'>Init</span>">Init</option><option value="Up" data-content="<span class='bgh bgh-success'>Up</span>">Up</option>
+</select>
+{{end}}
+
+{{define "select_route_communities"}}
+<select class="selectpicker" name="route-communities" id="select-route-communities" data-width="100%" data-live-search="true" data-selected-text-format="count > 1" data-actions-box="true" multiple>
+{{range .RouteCommunityOptions}}{{if .GroupStart}}<optgroup label="{{.Group}}">{{end}}<option value="{{.Value}}" data-content="{{.Content}}">{{.Label}}</option>{{if .GroupEnd}}</optgroup>{{end}}{{end}}
+</select>
+{{end}}
+
+{{define "select_route_flag"}}
+<select class="selectpicker" name="route-flag" id="select-route-flag" data-width="100%" data-selected-text-format="count > 2" data-actions-box="true" multiple>
+{{range .Flags}}<option value="({{.ID}})" data-content="<span class='bgh bgh-{{.Label}}'>{{.Title}}</span>">{{.Title}}</option>{{end}}
+</select>
+{{end}}

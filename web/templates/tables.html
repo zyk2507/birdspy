@@ -1,0 +1,35 @@
+{{define "bgp_protocols"}}
+<table id="bgp-protocols" class="table-dt" data-url="/api/{{.ServerID}}/bgp/protocols" data-server="{{.ServerID}}" cellspacing="0" width="100%">
+    <thead><tr>
+        <th scope="col" class="text-nowrap">Peer Name</th><th scope="col">Table</th><th scope="col" class="text-nowrap">IP Address</th><th scope="col">Description</th><th scope="col">ASN</th><th scope="col"><abbr title="BGP State" data-toggle="tooltip">State</abbr></th><th scope="col"><abbr title="PfxRcd/PfxLimit" data-toggle="tooltip">PfxRatio</abbr></th><th scope="col"><abbr title="PfxInv/PfxRcd" data-toggle="tooltip">InvRatio</abbr></th><th scope="col"><abbr title="Import limit" data-toggle="tooltip">PfxLimit</abbr></th><th scope="col"><abbr title="Imported Routes" data-toggle="tooltip">PfxRcd</abbr></th><th scope="col"><abbr title="Exported Routes" data-toggle="tooltip">PfxExp</abbr></th><th scope="col"><abbr title="Invalid Routes" data-toggle="tooltip">PfxInv</abbr></th><th scope="col">Status</th><th scope="col"><abbr title="State Changed" data-toggle="tooltip">Changed</abbr></th><th scope="col">Action</th>
+    </tr></thead>
+</table>
+{{template "filter_bgp" .}}
+{{end}}
+
+{{define "bfd_sessions"}}
+<table id="bfd-sessions" class="table-dt" data-url="/api/{{.ServerID}}/bfd/sessions" data-server="{{.ServerID}}" cellspacing="0" width="100%">
+    <thead><tr>
+        <th scope="col" class="text-nowrap">Peer Name</th><th scope="col">Table</th><th scope="col" class="text-nowrap">IP Address</th><th scope="col">Description</th><th scope="col">ASN</th><th scope="col">Interface</th><th scope="col">State</th><th scope="col">Since</th><th scope="col">Interval</th><th scope="col">Timeout</th><th scope="col">Action</th>
+    </tr></thead>
+</table>
+{{template "filter_bfd" .}}
+{{end}}
+
+{{define "routes"}}
+<table id="routes" class="table-dt" data-url="{{.DataURL}}" data-server="{{.ServerID}}" data-grouped="{{.Grouped}}" data-just-invalid="{{.JustInvalid}}" cellspacing="0" width="100%">
+    <thead><tr>
+        <th scope="col">Description</th><th scope="col">Peer Name</th><th scope="col">Peer ASN</th><th scope="col">Table</th><th scope="col">Network</th><th scope="col">Neighbor Name</th><th scope="col">Neighbor ASN</th><th scope="col" class="text-nowrap">Next Hop</th><th scope="col">Flags</th><th scope="col">Metric</th><th scope="col">Communities</th><th scope="col"><abbr title="Communities Count" data-toggle="tooltip">&Sigma;C</abbr></th><th scope="col" class="text-nowrap">Large Communities</th><th scope="col"><abbr title="Large Communities Count" data-toggle="tooltip">&Sigma;LC</abbr></th><th scope="col" class="text-nowrap">Extended Communities</th><th scope="col"><abbr title="Extended Communities Count" data-toggle="tooltip">&Sigma;EC</abbr></th><th scope="col" class="text-nowrap">AS Path</th><th scope="col">Action</th>
+    </tr></thead>
+</table>
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="small-modal" aria-hidden="true" id="route-table-modal">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Title</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+            <div class="modal-body"></div>
+            <div class="modal-footer"><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button></div>
+        </div>
+    </div>
+</div>
+{{template "filter_routes" .}}
+{{end}}

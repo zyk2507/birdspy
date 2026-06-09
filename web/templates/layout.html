@@ -1,0 +1,73 @@
+{{define "layout"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{{if ne .Route "homepage"}}{{.Title}} | {{.Subtitle}}{{else}}{{.Site.Title}} | {{.Organization.ShortName}}{{end}}</title>
+    {{range .CSS}}<link rel="stylesheet" href="{{.}}">
+    {{end}}<link rel="icon" href="/build/images/favicon.png">
+</head>
+<body class="d-flex flex-column">
+<div class="navigation-wrapper">
+    <div class="container navigation">
+        <a href="/" class="navbar-brand" title="{{.Organization.ShortName}}: {{.Site.Title}}">
+            <img src="/build/images/logo.svg" class="d-inline-block align-top" width="180" alt="{{.Organization.ShortName}}: {{.Site.Title}}">
+        </a>
+        <nav class="main">
+            <a href="/" class="{{if eq .Route "homepage"}}active{{end}}" title="Homepage">Home</a>
+            <a href="/{{.ServerID}}/bfd/sessions" class="{{if eq .Route "bfd_sessions"}}active{{end}}" title="BFD Sessions Summary">BFD</a>
+            <a href="/{{.ServerID}}/bgp/protocols" class="{{if eq .Route "bgp_protocols"}}active{{end}}" title="BGP Protocols Summary">BGP</a>
+            <a href="/{{.ServerID}}/filtered-routes" class="{{if eq .Route "filtered_routes"}}active{{end}}" title="Filtered Routes">Filtered</a>
+            <a href="/{{.ServerID}}/community/lookup" class="{{if eq .Route "community_lookup"}}active{{end}}" title="BGP Community Lookup">Community</a>
+            <a href="/{{.ServerID}}/network/lookup" class="{{if eq .Route "network_lookup"}}active{{end}}" title="Network Prefix Lookup">Network</a>
+        </nav>
+    </div>
+</div>
+
+<div class="container pb-3">
+    <div class="heading">
+        {{if .ShowServerDropdown}}
+        <div class="row">
+            <div class="heading-display"><h1>{{.Title}}</h1></div>
+            <div class="heading-navigation mb-3">
+                <div class="btn-group" title="Select Route Server">
+                    <button type="button" class="btn btn-outline-primary btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{.CurrentServer.Name}}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        {{range .Servers}}
+                        <a class="dropdown-item" href="{{serverSwitchPath $.RequestPath $.ServerID .ID}}">{{.Name}}</a>
+                        {{end}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{else}}
+        <h1>{{.Title}}</h1>
+        {{end}}
+        {{if .HeadingText}}<div class="heading-text">{{.HeadingText}}</div>{{end}}
+    </div>
+
+    {{if eq .ContentTemplate "home"}}{{template "home" .}}{{end}}
+    {{if eq .ContentTemplate "bgp_protocols"}}{{template "bgp_protocols" .}}{{end}}
+    {{if eq .ContentTemplate "bfd_sessions"}}{{template "bfd_sessions" .}}{{end}}
+    {{if eq .ContentTemplate "routes"}}{{template "routes" .}}{{end}}
+    {{if eq .ContentTemplate "network_lookup"}}{{template "network_lookup" .}}{{end}}
+    {{if eq .ContentTemplate "community_lookup"}}{{template "community_lookup" .}}{{end}}
+</div>
+
+<footer class="container mt-auto pt-3 border-top">
+    <div class="row">
+        <div class="col-12 col-md">
+            &copy; {{.Organization.Founding}}-{{.Year}} <a href="//www.nix.cz/en" target="_blank">{{.Organization.ShortName}}</a> - Neutral Internet eXchange for the Czech Republic and Beyond!
+            <small class="d-block mb-3 text-muted">{{.Organization.ShortName}}: {{.Site.Title}} based on idea from the RIPE IXP Tools Hackaton winning project.</small>
+        </div>
+    </div>
+</footer>
+
+<script>const locale = 'en';</script>
+{{range .JS}}<script src="{{.}}"></script>
+{{end}}</body>
+</html>
+{{end}}

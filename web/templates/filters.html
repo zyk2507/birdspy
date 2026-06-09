@@ -1,0 +1,41 @@
+{{define "filter_bgp"}}
+<div class="modal fade table-filter" id="modal-filter-bgp-protocols" tabindex="-1" role="dialog" aria-labelledby="filter-bgp-protocols-label" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document"><div class="modal-content">
+<div class="modal-header"><h5 class="modal-title" id="filter-bgp-protocols-label">Filter BGP Protocols</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+<form class="filter-dt" id="filter-bgp-protocols"><div class="modal-body">
+<div class="form-row"><div class="form-group col-md-8"><label for="peer-name" class="col-form-label">Peer Name</label><input type="text" class="form-control" name="peer-name" id="peer-name"></div><div class="form-group col-md-4"><label for="asn" class="col-form-label">ASN</label><input type="number" class="form-control" name="asn" id="asn"></div></div>
+<div class="form-row"><div class="form-group col-md-8"><label for="ip-address" class="col-form-label">IP Address</label><input type="text" class="form-control" name="ip-address" id="ip-address"></div><div class="form-group col-md-4"><label for="table" class="col-form-label">Table</label><input type="text" class="form-control" name="table" id="table"></div></div>
+<div class="form-row"><div class="form-group col-md-8"><label for="description" class="col-form-label">Description</label><input type="text" class="form-control" name="description" id="description"></div></div>
+<div class="form-row"><div class="form-group col-md-4"><label for="select-bgp-state">BGP State</label>{{template "select_bgp_state" .}}</div><div class="form-group col-md-4"><label for="select-status">Status</label>{{template "select_bgp_status" .}}</div></div>
+</div><div class="modal-footer"><button type="reset" class="btn btn-danger reset">Reset</button><button type="reset" class="btn btn-warning mr-auto clear">Clear</button><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button><button type="submit" class="btn btn-primary">Submit</button></div></form>
+</div></div></div>
+{{end}}
+
+{{define "filter_bfd"}}
+<div class="modal fade table-filter" id="modal-filter-bfd-sessions" tabindex="-1" role="dialog" aria-labelledby="filter-bfd-sessions-label" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document"><div class="modal-content">
+<div class="modal-header"><h5 class="modal-title" id="filter-bfd-sessions-label">Filter BFD Sessions</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+<form class="filter-dt" id="filter-bfd-sessions"><div class="modal-body">
+<div class="form-row"><div class="form-group col-md-8"><label for="peer-name" class="col-form-label">Peer Name</label><input type="text" class="form-control" name="peer-name" id="peer-name"></div><div class="form-group col-md-4"><label for="asn" class="col-form-label">ASN</label><input type="number" class="form-control" name="asn" id="asn"></div></div>
+<div class="form-row"><div class="form-group col-md-8"><label for="ip-address" class="col-form-label">IP Address</label><input type="text" class="form-control" name="ip-address" id="ip-address"></div><div class="form-group col-md-4"><label for="table" class="col-form-label">Table</label><input type="text" class="form-control" name="table" id="table"></div></div>
+<div class="form-row"><div class="form-group col-md-8"><label for="description" class="col-form-label">Description</label><input type="text" class="form-control" name="description" id="description"></div></div>
+<div class="form-row"><div class="form-group col-md-4"><label for="interface" class="col-form-label">Interface</label><input type="text" class="form-control" name="interface" id="interface"></div><div class="form-group col-md-4"><label for="interval" class="col-form-label">Interval</label><input type="number" class="form-control" name="interval" id="interval"></div><div class="form-group col-md-4"><label for="timeout" class="col-form-label">Timeout</label><input type="number" class="form-control" name="timeout" id="timeout"></div></div>
+<div class="form-row"><div class="form-group col-md-4"><label for="select-bfd-state">BFD State</label>{{template "select_bfd_state" .}}</div></div>
+</div><div class="modal-footer"><button type="reset" class="btn btn-danger reset">Reset</button><button type="reset" class="btn btn-warning mr-auto clear">Clear</button><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button><button type="submit" class="btn btn-primary">Submit</button></div></form>
+</div></div></div>
+{{end}}
+
+{{define "filter_routes"}}
+<div class="modal fade table-filter" id="modal-filter-server-routes" tabindex="-1" role="dialog" aria-labelledby="filter-server-routes-label" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document"><div class="modal-content">
+<div class="modal-header"><h5 class="modal-title" id="filter-server-routes-label">Filter Server Routes</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+<form class="filter-dt" id="filter-server-routes"><div class="modal-body">
+{{if .Grouped}}<div class="form-row"><div class="form-group col-md-8"><label for="peer-name" class="col-form-label">Peer Name</label><input type="text" class="form-control" name="peer-name" id="peer-name"></div><div class="form-group col-md-4"><label for="peer-asn" class="col-form-label">Peer ASN</label><input type="number" class="form-control" name="peer-asn" id="peer-asn"></div></div>{{end}}
+<div class="form-row"><div class="form-group col-md-8"><label for="neighbor-name" class="col-form-label">Neighbor Name</label><input type="text" class="form-control" name="neighbor-name" id="neighbor-name"></div><div class="form-group col-md-4"><label for="neighbor-asn" class="col-form-label">Neighbor ASN</label><input type="number" class="form-control" name="neighbor-asn" id="neighbor-asn"></div></div>
+<div class="form-row"><div class="form-group col-md-8"><label for="network" class="col-form-label">Network</label><input type="text" class="form-control" name="network" id="network"></div><div class="form-group col-md-4"><label for="metric" class="col-form-label">Metric</label><input type="number" class="form-control" name="metric" id="metric"></div></div>
+<div class="form-row"><div class="form-group col-md-8"><label for="next-hop" class="col-form-label">Next Hop</label><input type="text" class="form-control" name="next-hop" id="next-hop"></div><div class="form-group col-md-4"><label for="as-path" class="col-form-label">AS Path</label><input type="text" class="form-control" name="as-path" id="as-path"></div></div>
+{{if .Grouped}}<div class="form-row"><div class="form-group col-md-8"><label for="description" class="col-form-label">Description</label><input type="text" class="form-control" name="description" id="description"></div><div class="form-group col-md-4"><label for="table" class="col-form-label">Table</label><input type="text" class="form-control" name="table" id="table"></div></div>{{end}}
+<div class="form-row"><div class="form-group col-md-8"><label for="select-route-communities">Communities</label>{{template "select_route_communities" .}}</div><div class="form-group col-md-4"><label for="select-route-flag">Flags</label>{{template "select_route_flag" .}}</div></div>
+</div><div class="modal-footer"><button type="reset" class="btn btn-danger reset">Reset</button><button type="reset" class="btn btn-warning mr-auto clear">Clear</button><button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button><button type="submit" class="btn btn-primary">Submit</button></div></form>
+</div></div></div>
+{{end}}

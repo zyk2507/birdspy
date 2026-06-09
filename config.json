@@ -1,0 +1,177 @@
+{
+  "listen": ":8080",
+  "default_server": "rs-1",
+  "cache_ttl_seconds": 300,
+  "cache_max_entries": 1024,
+  "cache_cleanup_interval_seconds": 60,
+  "reader": {
+    "mode": "sample",
+    "tiny_samples": true,
+    "command_timeout_seconds": 180
+  },
+  "site": {
+    "title": "BirdSpy",
+    "subtitle": "Looking Glass for BIRD Internet Routing Daemon",
+    "build": 2026
+  },
+  "organization": {
+    "name": "NIX.CZ, z.s.p.o.",
+    "short_name": "NIX.CZ",
+    "street": "Milesovska 1136/5",
+    "town": "130 00 Praha 3",
+    "ic": "65990471",
+    "dic": "CZ65990471",
+    "email": "info@nix.cz",
+    "founding": 1996
+  },
+  "servers": {
+    "rs-1": {
+      "name": "RS-1",
+      "description": "Main Route Server",
+      "socket": "/tmp/bird-rs1.ctl",
+      "version_mask": "v-2.x"
+    },
+    "rs-2": {
+      "name": "RS-2",
+      "description": "Second Route Server",
+      "socket": "/tmp/bird-rs2.ctl",
+      "version_mask": "v-2.x"
+    }
+  },
+  "flags": {
+    "primary": {
+      "name": "P",
+      "title": "Primary",
+      "label": "primary",
+      "type": "route",
+      "weight": 0
+    },
+    "secondary": {
+      "name": "S",
+      "title": "Secondary",
+      "label": "secondary",
+      "type": "route",
+      "weight": 0
+    },
+    "valid": {
+      "name": "V",
+      "title": "Valid",
+      "label": "success",
+      "type": "community",
+      "weight": 5
+    },
+    "invalid": {
+      "name": "I",
+      "title": "Invalid",
+      "label": "red",
+      "type": "community",
+      "weight": 10
+    },
+    "rpki_invalid": {
+      "name": "RPKI I",
+      "title": "RPKI Invalid",
+      "label": "red",
+      "type": "community",
+      "weight": 15
+    },
+    "rtbh": {
+      "name": "RTBH",
+      "title": "RTBH",
+      "label": "orange",
+      "type": "community",
+      "weight": 20
+    },
+    "dos_protect": {
+      "name": "DoS",
+      "title": "DoS Protect",
+      "label": "yellow",
+      "type": "community",
+      "weight": 25
+    }
+  },
+  "flag_patterns": {
+    "communities": {
+      "invalid": "12345:65432",
+      "rpki_invalid": "12345:65431",
+      "rtbh": "12345:666|12345:\\d+",
+      "dos_protect": "12345:\\d+"
+    },
+    "large_communities": {
+      "invalid": "12345:111[12]:\\d+",
+      "rpki_invalid": "12345:1111:11"
+    },
+    "extended_communities": {
+      "dos_protect": "rt:65432:\\d+"
+    }
+  },
+  "black_holes": {
+    "1.2.3.4": "BLACKHOLE-1",
+    "2.3.4.5": "BLACKHOLE-2"
+  },
+  "invalid": {
+    "communities": [],
+    "large_communities": [
+      ["12345", "1111", "*"],
+      ["12345", "1112", "*"]
+    ],
+    "extended_communities": []
+  },
+  "filtered": {
+    "communities": [
+      ["12345", "65431"],
+      ["12345", "666"],
+      ["12345", "*"],
+      ["65511", "*"],
+      ["65535", "666"]
+    ],
+    "large_communities": [
+      ["12345", "1101", "*"],
+      ["12345", "1102", "*"],
+      ["65511", "*", "*"],
+      ["65535", "666", "*"]
+    ],
+    "extended_communities": [
+      ["rt", "65432", "*"]
+    ]
+  },
+  "known": {
+    "communities": {
+      "0:*": {
+        "name": "NOT_ADVERTIZED",
+        "label": "warning"
+      },
+      "12345:65431": {
+        "name": "RPKI_INVALID",
+        "label": "red"
+      },
+      "65511:*": {
+        "name": "RTBH",
+        "label": "orange"
+      },
+      "65535:666": {
+        "name": "EURO-IX RTBH",
+        "label": "orange"
+      }
+    },
+    "large_communities": {
+      "0:*:*": {
+        "name": "NOT_ADVERTIZED",
+        "label": "warning"
+      },
+      "65511:*:*": {
+        "name": "RTBH",
+        "label": "orange"
+      },
+      "65535:666:*": {
+        "name": "EURO-IX RTBH",
+        "label": "orange"
+      }
+    },
+    "extended_communities": {
+      "rt:65432:*": {
+        "name": "DoS Protect",
+        "label": "yellow"
+      }
+    }
+  }
+}

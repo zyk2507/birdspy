@@ -1,105 +1,133 @@
-var Encore = require('@symfony/webpack-encore');
+const path = require('path');
+const webpack = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-// Manually configure the runtime environment if not already configured yet by the "encore" command.
-// It's useful when you use tools that rely on webpack.config.js file.
-if (!Encore.isRuntimeEnvironmentConfigured()) {
-    Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
+class EntrypointsPlugin {
+    apply(compiler) {
+        compiler.hooks.thisCompilation.tap('EntrypointsPlugin', (compilation) => {
+            compilation.hooks.processAssets.tap(
+                {
+                    name: 'EntrypointsPlugin',
+                    stage: webpack.Compilation.PROCESS_ASSETS_STAGE_REPORT,
+                },
+                () => {
+                    const entrypoints = {};
+
+                    for (const [name, entrypoint] of compilation.entrypoints) {
+                        const files = entrypoint.getFiles()
+                            .filter((file) => !file.endsWith('.map'));
+
+                        entrypoints[name] = {
+                            css: files.filter((file) => file.endsWith('.css')).map((file) => `/build/${file}`),
+                            js: files.filter((file) => file.endsWith('.js')).map((file) => `/build/${file}`),
+                        };
+                    }
+
+                    compilation.emitAsset(
+                        'entrypoints.json',
+                        new webpack.sources.RawSource(JSON.stringify({entrypoints}, null, 2))
+                    );
+                }
+            );
+        });
+    }
 }
 
-Encore
-    // directory where compiled assets will be stored
-    .setOutputPath('public/build/')
-
-    // public path used by the web server to access the output path
-    .setPublicPath('/build')
-
-    // only needed for CDN's or sub-directory deploy
-    //.setManifestKeyPrefix('build/')
-
-    /*
-     * ENTRY CONFIG
-     *
-     * Add 1 entry for each "page" of your app
-     * (including one that's included on every page - e.g. "app")
-     *
-     * Each entry will result in one JavaScript file (e.g. app.js)
-     * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
-     */
-    .addEntry('app', './assets/js/app.js')
-    .addEntry('bfd_sessions', './assets/js/bfd_sessions.js')
-    .addEntry('bgp_protocols', './assets/js/bgp_protocols.js')
-    .addEntry('community_lookup', './assets/js/community_lookup.js')
-    .addEntry('network_lookup', './assets/js/network_lookup.js')
-    .addEntry('server_routes', './assets/js/server_routes.js')
-
-    // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
-    .splitEntryChunks()
-
-    // will require an extra script tag for runtime.js
-    // but, you probably want this, unless you're building a single-page app
-    .enableSingleRuntimeChunk()
-
-    /*
-     * FEATURE CONFIG
-     *
-     * Enable & configure other features below. For a full
-     * list of features, see:
-     * https://symfony.com/doc/current/frontend.html#adding-more-features
-     */
-    .cleanupOutputBeforeBuild()
-    .enableBuildNotifications()
-    .enableSourceMaps(!Encore.isProduction())
-    // enables hashed filenames (e.g. app.abc123.css)
-    .enableVersioning(Encore.isProduction())
-
-    // enables @babel/preset-env polyfills
-    .configureBabel(() => {}, {
-        useBuiltIns: 'usage',
-        corejs: 3
-    })
-
-    // copying & referencing images
-    .copyFiles({
-        from: './assets/images',
-        to: 'images/[path][name].[hash:8].[ext]',
-        pattern: /\.(ico|png|jpg|jpeg|svg)$/,
-
-        // optional target path, relative to the output dir
-        //to: 'images/[path][name].[ext]',
-
-        // if versioning is enabled, add the file hash too
-        //to: 'images/[path][name].[hash:8].[ext]',
-
-        // only copy files matching this pattern
-        //pattern: /\.(png|jpg|jpeg)$/
-    })
-
-    // enables Sass/SCSS support
-    .enableSassLoader()
-
-    // enables Post CSS support
-    .enablePostCssLoader()
-
-    .enablePostCssLoader((options) => {
-        options.postcssOptions = {
-            // the directory where the postcss.config.js file is stored
-            path: './postcss.config.js'
-        };
-    })
-
-    // uncomment if you use TypeScript
-    //.enableTypeScriptLoader()
-
-    // uncomment to get integrity="..." attributes on your script & link tags
-    // requires WebpackEncoreBundle 1.4 or higher
-    .enableIntegrityHashes(Encore.isProduction())
-
-    // uncomment if you're having problems with a jQuery plugin
-    .autoProvidejQuery()
-
-    // uncomment if you use API Platform Admin (composer req api-admin)
-    //.enableReactPreset()
-    //.addEntry('admin', './assets/js/admin.js')
-;
-
-module.exports = Encore.getWebpackConfig();
+module.exports = {
+    entry: {
+        app: './assets/js/app.js',
+        bfd_sessions: './assets/js/bfd_sessions.js',
+        bgp_protocols: './assets/js/bgp_protocols.js',
+        community_lookup: './assets/js/community_lookup.js',
+        network_lookup: './assets/js/network_lookup.js',
+        server_routes: './assets/js/server_routes.js',
+    },
+    output: {
+        path: path.resolve(__dirname, 'public/build'),
+        publicPath: '/build/',
+        filename: '[name].[contenthash:8].js',
+        chunkFilename: '[name].[contenthash:8].js',
+        clean: true,
+    },
+    resolve: {
+        extensions: ['.js', '.json'],
+    },
+    module: {
+        rules: [
+            {
+                test: /\.m?js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: [
+                            ['@babel/preset-env', {
+                                useBuiltIns: 'usage',
+                                corejs: 3,
+                            }],
+                        ],
+                    },
+                },
+            },
+            {
+                test: /\.(scss|css)$/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            sourceMap: false,
+                        },
+                    },
+                    'postcss-loader',
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            sassOptions: {
+                                quietDeps: true,
+                                loadPaths: [path.resolve(__dirname, 'node_modules')],
+                            },
+                        },
+                    },
+                ],
+            },
+            {
+                test: /\.(png|jpg|jpeg|gif|svg|woff2?|eot|ttf|otf)$/i,
+                type: 'asset/resource',
+                generator: {
+                    filename: 'assets/[name].[contenthash:8][ext]',
+                },
+            },
+        ],
+    },
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        },
+        runtimeChunk: 'single',
+    },
+    plugins: [
+        new MiniCssExtractPlugin({
+            filename: '[name].[contenthash:8].css',
+        }),
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: 'assets/images',
+                    to: 'images/[name][ext]',
+                },
+            ],
+        }),
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+            'window.jQuery': 'jquery',
+        }),
+        new webpack.NormalModuleReplacementPlugin(
+            /friendsofsymfony\/jsrouting-bundle\/Resources\/public\/js\/router\.min\.js$/,
+            path.resolve(__dirname, 'web/frontend-router.js')
+        ),
+        new EntrypointsPlugin(),
+    ],
+};
